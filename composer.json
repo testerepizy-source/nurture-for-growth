@@ -1,0 +1,17 @@
+{
+    "name": "nfg/nurtureforgrowth",
+    "description": "NurtureForGrowth (NFG) - PHP Native MVC untuk klinik psikologi & praktik psikiater",
+    "type": "project",
+    "require": {
+        "php": ">=8.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Core\\": "core/",
+            "App\\": "app/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true
+    }
+}
