@@ -530,209 +530,73 @@ $overallAvg = $sumCount > 0 ? round($sumRating / $sumCount, 1) : null;
 
 
 
-<!-- ======================= SITE REVIEWS (Landing) - Swiper + Review Modal ======================= -->
-<section class="site-reviews-band pt-section pb-section">
+<!-- ======================= ULASAN GOOGLE (Landing) - Marquee berjalan ======================= -->
+<?php if (!empty($googleReviews)):
+$grCount = !empty($placeInfo['review_count']) ? (int) $placeInfo['review_count'] : count($googleReviews);
+$grAvg = !empty($placeInfo['rating']) ? (float) $placeInfo['rating']
+    : (count($googleReviews) ? round(array_sum(array_column($googleReviews, 'rating')) / count($googleReviews), 1) : 0); ?>
+<section class="site-reviews-band google-reviews-band pt-section pb-section">
   <div class="container">
-    <div class="text-center mb-5 reveal">
+    <div class="text-center mb-4 reveal">
       <div class="section-eyebrow justify-content-center">Ulasan Client</div>
       <h2 class="section-title">Apa Kata Client Tentang Kami</h2>
-      <p class="section-copy mx-auto mt-3" style="max-width:680px; color:var(--ink-faint);">Baca pengalaman nyata client
-        dan beri tahu kami bagaimana sesi konsultasi membantu Anda berkembang.</p>
+      <p class="section-copy mx-auto mt-3" style="max-width:680px; color:var(--ink-faint);">Ulasan asli dari klien kami
+        yang dipublikasikan di halaman Google Maps.</p>
+      <div class="gr-chip">
+        <svg class="gr-g" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+          <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
+          <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
+          <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" />
+          <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
+        </svg>
+        <span>Google</span>
+        <span class="gr-chip-stars"><?php for ($i = 1; $i <= 5; $i++): ?><i
+            class="fa<?= $i <= (int) round($grAvg) ? 's' : 'r' ?> fa-star"></i><?php endfor; ?></span>
+        <strong><?= number_format($grAvg, 1, ',', '.') ?></strong>
+        <span class="gr-chip-count">(<?= $grCount ?> ulasan)</span>
+      </div>
     </div>
 
-    <div class="reviews-content">
-      <div class="swiper testimonials-swiper">
-        <div class="swiper-wrapper">
-          <?php if (!empty($siteReviews)): ?>
-          <?php foreach ($siteReviews as $sr): ?>
-          <div class="swiper-slide">
-            <div class="testimonial-card text-center">
-              <div class="avatar mb-3 mx-auto">
-                <?php if (!empty($sr['avatar'])): ?>
-                <img src="<?= e($sr['avatar']) ?>" alt="<?= e($sr['user_name']) ?>" loading="lazy">
-                <?php else: ?>
-                <?= e(mb_substr($sr['user_name'], 0, 1)) ?>
-                <?php endif; ?>
+    <div class="gr-marquee" aria-label="Ulasan klien di Google Maps">
+      <div class="gr-track">
+        <?php for ($grPass = 0; $grPass < 2; $grPass++): ?>
+        <?php foreach ($googleReviews as $gr): ?>
+        <div class="gr-item"<?= $grPass ? ' aria-hidden="true"' : '' ?>>
+          <article class="gr-card">
+            <header class="gr-head">
+              <?php if (!empty($gr['author_photo'])): ?>
+              <img class="gr-avatar" src="<?= e($gr['author_photo']) ?>" alt="<?= e($gr['author_name']) ?>"
+                loading="lazy">
+              <?php else: ?>
+              <span class="gr-avatar" aria-hidden="true"><?= e(mb_strtoupper(mb_substr($gr['author_name'], 0, 1))) ?></span>
+              <?php endif; ?>
+              <div class="gr-meta">
+                <div class="gr-name"><?= e($gr['author_name']) ?></div>
+                <div class="gr-sub">
+                  <span class="gr-stars"
+                    aria-label="Rating <?= (int) $gr['rating'] ?> dari 5 bintang"><?php for ($i = 1; $i <= 5; $i++): ?><i
+                      class="fa<?= $i <= (int) $gr['rating'] ? 's' : 'r' ?> fa-star"></i><?php endfor; ?></span>
+                  <?php if (!empty($gr['relative_time'])): ?><span
+                    class="gr-time"><?= e($gr['relative_time']) ?></span><?php endif; ?>
+                </div>
               </div>
-              <div class="quote-mark">“</div>
-              <p class="quote mb-3"><?= e($sr['comment']) ?></p>
-              <div class="rating small mb-2"><?php for ($i=1;$i<=5;$i++): ?><i
-                  class="fa<?= $i <= $sr['rating'] ? 's' : 'r' ?> fa-star"></i><?php endfor; ?></div>
-              <!-- <strong class="d-block mt-2"><?= e($sr['user_name']) ?></strong> -->
-              <?php if (!empty($sr['role'])): ?><div class="testimonial-role text-muted small"><?= e($sr['role']) ?>
-              </div><?php endif; ?>
-            </div>
-          </div>
-          <?php endforeach; ?>
-          <?php else: ?>
-          <div class="swiper-slide">
-            <div class="testimonial-card text-center">Belum ada ulasan.</div>
-          </div>
-          <?php endif; ?>
+            </header>
+            <p class="gr-text"><?= e($gr['review_text']) ?></p>
+          </article>
         </div>
-        <div class="swiper-pagination"></div>
-      </div>
-
-      <div class="review-cta text-center mt-4">
-        <div class="review-output text-muted small mb-3">Klik tombol di bawah untuk membuka form ulasan. Jika belum
-          masuk, Anda akan diarahkan ke halaman login.</div>
-        <?php $canReview = \Core\Auth::check() && (str_ends_with(strtolower((string) (\Core\Auth::user()['email'] ?? '')), '@gmail.com') || str_ends_with(strtolower((string) (\Core\Auth::user()['email'] ?? '')), '@googlemail.com')); ?>
-        <?php if ($canReview): ?>
-        <button class="btn btn-primary btn-lg review-action-btn" data-bs-toggle="modal"
-          data-bs-target="#reviewModal">Berikan Ulasan</button>
-        <?php else: ?>
-        <a href="<?= base_url('/login') ?>" class="btn btn-outline-primary btn-lg review-action-btn">Masuk / Daftar</a>
-        <?php endif; ?>
+        <?php endforeach; ?>
+        <?php endfor; ?>
       </div>
     </div>
   </div>
 </section>
-
-<div class="modal fade" id="reviewModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-md">
-    <div class="modal-content rounded-4">
-      <div class="modal-header border-0 pb-0">
-        <div>
-          <h5 class="modal-title">Tinggalkan Ulasan</h5>
-          <p class="small text-muted mb-0">Beritahu pengalaman Anda setelah sesi.</p>
-        </div>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
-      </div>
-      <div class="modal-body pt-2">
-        <form method="POST" action="<?= base_url('/reviews') ?>">
-          <?= \Core\Csrf::field() ?>
-          <div class="mb-3">
-            <label class="form-label small fw-semibold">Rating</label>
-            <select name="rating" class="form-select form-select-lg">
-              <option value="5">5 — Sangat Baik</option>
-              <option value="4">4 — Baik</option>
-              <option value="3">3 — Cukup</option>
-              <option value="2">2 — Kurang</option>
-              <option value="1">1 — Buruk</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label class="form-label small fw-semibold">Komentar</label>
-            <textarea name="comment" class="form-control form-control-lg" rows="4"
-              placeholder="Bagikan pengalaman Anda secara singkat..."></textarea>
-          </div>
-          <div class="d-grid gap-2">
-            <button type="submit" class="btn btn-primary btn-lg">Kirim Ulasan</button>
-            <button type="button" class="btn btn-outline-secondary btn-lg" data-bs-dismiss="modal">Batal</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
+<?php endif; ?>
 
 <!-- Swiper CDN -->
 <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
 <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 
 <style>
-  .review-highlight {
-    display: none;
-  }
-
-  .reviews-content {
-    max-width: 1160px;
-    margin: 0 auto;
-  }
-
-  .review-output {
-    background: #f8fafc;
-    border: 1px solid rgba(15, 118, 110, .16);
-    border-radius: 18px;
-    padding: 1rem 1.2rem;
-    color: #334155;
-    margin: 0 auto 1.75rem;
-    max-width: 740px;
-    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.06);
-  }
-
-  .review-cta {
-    max-width: 460px;
-    margin: 0 auto;
-  }
-
-  .review-action-btn {
-    min-width: 240px;
-  }
-
-  .testimonial-card {
-    background: #ffffff;
-    border-radius: 28px;
-    padding: 2.4rem 2rem;
-    box-shadow: 0 20px 46px rgba(15, 23, 42, 0.08);
-    width: 416px;
-    height: 363px;
-    min-height: 363px;
-    max-height: 363px;
-    transition: transform .25s ease, box-shadow .25s ease;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    overflow: hidden;
-  }
-
-  .testimonial-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 36px 80px rgba(15, 23, 42, 0.14);
-  }
-
-  .quote-mark {
-    font-size: 2.4rem;
-    color: #10b981;
-    opacity: .18;
-    margin-bottom: 0.9rem;
-  }
-
-  .quote {
-    margin: 0 auto;
-    color: #0f172a;
-    line-height: 1.6;
-    font-weight: 500;
-    font-size: .95rem;
-    max-width: 38ch;
-    flex: 1 1 auto;
-    overflow: hidden;
-  }
-
-  .testimonial-role {
-    color: #64748b;
-    margin-top: .75rem;
-    font-size: .95rem;
-  }
-
-  .avatar {
-    width: 78px;
-    height: 78px;
-    border-radius: 50%;
-    background: #effaf4;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    color: #0f766e;
-    overflow: hidden;
-    border: 1px solid rgba(15, 118, 110, 0.14);
-    margin: 0 auto 1rem;
-  }
-
-  .testimonial-card .rating {
-    margin-bottom: 1rem;
-  }
-
-  .testimonial-card .rating i {
-    color: #f59e0b;
-    margin-right: 4px;
-  }
-
-  .testimonials-swiper {
-    padding-left: 0;
-    padding-right: 0;
-  }
 
   .swiper {
     padding-bottom: 1.75rem;
@@ -742,28 +606,6 @@ $overallAvg = $sumCount > 0 ? round($sumRating / $sumCount, 1) : null;
 
   .swiper-wrapper {
     align-items: stretch;
-  }
-
-  .testimonials-swiper .swiper-slide {
-    box-sizing: border-box;
-    display: flex;
-    justify-content: center;
-    align-items: stretch;
-    padding: 0 6px;
-    transition: transform .45s cubic-bezier(.2, .8, .2, 1), opacity .45s ease;
-    flex: 0 0 416px;
-    width: 416px;
-    max-width: 416px;
-  }
-
-  .testimonials-swiper .swiper-slide {
-    opacity: .88;
-  }
-
-  .testimonials-swiper .swiper-slide.swiper-slide-active {
-    opacity: 1;
-    transform: translateY(-4px);
-    z-index: 2;
   }
 
   .swiper-pagination {
@@ -783,128 +625,6 @@ $overallAvg = $sumCount > 0 ? round($sumRating / $sumCount, 1) : null;
   .swiper-pagination-bullet-active {
     background: var(--teal);
   }
-
-  .review-layout .col-xl-5,
-  .review-layout .col-xl-7 {
-    display: none;
-  }
-
-  .modal-content {
-    border-radius: 24px;
-  }
-
-  .modal-header {
-    padding-bottom: 0;
-  }
-
-  .modal-body {
-    padding-top: 1rem;
-  }
-
-  .form-select-lg,
-  .form-control-lg {
-    border-radius: 16px;
-  }
-
-  @media (max-width: 1199.98px) {
-    .testimonials-swiper .swiper-slide {
-      flex: 0 0 calc((100% - 20px) / 2);
-      width: calc((100% - 20px) / 2);
-      max-width: calc((100% - 20px) / 2);
-    }
-  }
-
-  @media (max-width: 767.98px) {
-    .testimonials-swiper .swiper-slide {
-      flex: 0 0 100% !important;
-      width: 100% !important;
-      max-width: 100% !important;
-    }
-
-    .testimonial-card {
-      width: 100%;
-      height: auto;
-      min-height: 0;
-      max-height: none;
-      padding: 1.35rem 1.15rem;
-      border-radius: 20px;
-    }
-
-    .testimonial-card .quote {
-      font-size: .9rem;
-      line-height: 1.6;
-    }
-
-    .testimonial-card .quote-mark {
-      font-size: 1.8rem;
-      margin-bottom: .35rem;
-    }
-
-    .testimonial-card .avatar {
-      width: 52px;
-      height: 52px;
-      font-size: 1.2rem;
-      margin-bottom: .6rem !important;
-    }
-
-    .testimonial-card .testimonial-role {
-      margin-top: .5rem;
-      font-size: .8rem;
-    }
-
-    .review-action-btn {
-      width: 100%;
-    }
-
-    .review-output {
-      margin-bottom: 1rem;
-    }
-  }
-
-  @media (max-width: 991.98px) {
-    .review-layout {
-      gap: 1.5rem;
-    }
-  }
-
-  @media (max-width: 767.98px) {
-    .review-highlight {
-      padding: 1.75rem;
-    }
-
-    .review-highlight h3 {
-      font-size: 1.6rem;
-    }
-
-    .review-score {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: .45rem;
-    }
-
-    .review-score strong {
-      font-size: 2.4rem;
-    }
-
-    .review-count {
-      width: 100%;
-    }
-
-    .testimonials-swiper .swiper-slide {
-      flex: 0 0 100% !important;
-      width: 100% !important;
-      max-width: 100% !important;
-    }
-
-    .testimonial-card {
-      min-height: 0;
-    }
-
-    .testimonials-swiper {
-      padding-left: 0;
-      padding-right: 0;
-    }
-  }
 </style>
 
 <script>
@@ -920,40 +640,23 @@ $overallAvg = $sumCount > 0 ? round($sumRating / $sumCount, 1) : null;
     }
 
     if (typeof Swiper === 'undefined') return;
-    new Swiper('.testimonials-swiper', {
-      loop: true,
-      autoplay: {
-        delay: 3200,
-        disableOnInteraction: false
-      },
-      speed: 800,
-      spaceBetween: 10,
-      grabCursor: true,
-      slidesPerView: 3,
-      centeredSlides: false,
-      pagination: {
-        el: '.swiper-pagination',
-        clickable: true
-      },
-      breakpoints: {
-        0: {
-          slidesPerView: 1,
-          spaceBetween: 10
-        },
-        640: {
-          slidesPerView: 1,
-          spaceBetween: 10
-        },
-        768: {
-          slidesPerView: 2,
-          spaceBetween: 10
-        },
-        992: {
-          slidesPerView: 3,
-          spaceBetween: 10
-        }
-      }
-    });
+    // Ulasan klien: marquee berjalan otomatis (kecepatan tetap ~35 px/detik),
+    // jeda saat di-hover (desktop) atau disentuh (mobile).
+    var grMarquee = document.querySelector('.gr-marquee');
+    var grTrack = document.querySelector('.gr-track');
+    if (grMarquee && grTrack) {
+      var grSetDur = function () {
+        var half = grTrack.scrollWidth / 2; // lebar satu set kartu (track = 2 set identik)
+        if (half > 0) grTrack.style.setProperty('--gr-dur', Math.max(30, Math.round(half / 35)) + 's');
+      };
+      grSetDur();
+      window.addEventListener('resize', grSetDur);
+      grMarquee.addEventListener('touchstart', function () { grMarquee.classList.add('gr-paused'); }, { passive: true });
+      grMarquee.addEventListener('touchend', function () {
+        window.setTimeout(function () { grMarquee.classList.remove('gr-paused'); }, 1200);
+      }, { passive: true });
+      grMarquee.addEventListener('touchcancel', function () { grMarquee.classList.remove('gr-paused'); }, { passive: true });
+    }
 
     var providersSwiper = document.querySelector('.providers-swiper');
     if (providersSwiper) {

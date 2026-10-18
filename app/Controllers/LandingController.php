@@ -42,13 +42,14 @@ class LandingController extends Controller
             );
         }
         $supportTeam = \App\Models\TeamMember::active();
-        $siteReviews = \App\Models\SiteReview::published();
+        $googleReviews = \App\Services\GoogleReviewService::latest(13);
+        $placeInfo = \App\Services\GoogleReviewService::placeInfo();
         $promos = \App\Models\ServicePromo::runningNow();
 
         $pageDescription = 'NurtureForGrowth mendampingi proses kesehatan mental Anda dengan konseling, asesmen, dan terapi psikologis berlisensi — online atau tatap muka.';
         $pageType = 'website';
         $pageImage = absolute_asset('img/brand/nfg-logo.jpg');
 
-        $this->view('landing.index', compact('articles', 'faqs', 'providers', 'providerTags', 'tags', 'stats', 'trustedAvatars', 'reviewSummaries', 'supportTeam', 'heroSlides', 'serviceVideos', 'pageDescription', 'pageType', 'pageImage', 'siteReviews', 'promos'), 'public');
+        $this->view('landing.index', compact('articles', 'faqs', 'providers', 'providerTags', 'tags', 'stats', 'trustedAvatars', 'reviewSummaries', 'supportTeam', 'heroSlides', 'serviceVideos', 'pageDescription', 'pageType', 'pageImage', 'googleReviews', 'placeInfo', 'promos'), 'public');
     }
 }

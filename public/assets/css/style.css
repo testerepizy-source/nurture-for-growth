@@ -1481,3 +1481,83 @@ textarea.form-control{ min-height:120px; }
   .articles-swiper .article-cat-pill{ font-size: .72rem; padding: 5px 12px; }
   .articles-swiper .article-arrow-btn{ width: 32px; height: 32px; font-size: .78rem; }
 }
+
+/* ===================== ULASAN GOOGLE (Landing) ===================== */
+/* Kartu ulasan gaya Google Maps: avatar + nama, bintang kuning, waktu, teks. */
+.gr-chip{
+  display:inline-flex; align-items:center; gap:8px; margin-top:16px;
+  padding:8px 16px; border-radius:999px; background:var(--paper-raised);
+  border:1px solid var(--sand-line); box-shadow:var(--shadow-sm);
+  font-size:.85rem; color:var(--ink);
+}
+.gr-chip .gr-g{ width:17px; height:17px; display:block; }
+.gr-chip-stars{ color:#FBBC04; font-size:.74rem; letter-spacing:1px; }
+.gr-chip-stars i{ margin-right:1px; }
+.gr-chip strong{ font-size:.85rem; }
+.gr-chip-count{ color:var(--ink-faint); font-size:.8rem; }
+
+/* Marquee berjalan: track berisi 2 set kartu identik, digeser -50% secara loop
+   sehingga animasi menyatu tanpa jeda. Jeda otomatis saat hover/disentuh. */
+.gr-marquee{ overflow:hidden; width:100%; }
+.gr-track{
+  display:flex; width:max-content; align-items:stretch;
+  animation: gr-scroll var(--gr-dur, 120s) linear infinite;
+  will-change: transform;
+}
+/* Hover-jeda hanya untuk pointer presisi (desktop); di sentuh mobile pakai .gr-paused dari JS,
+   karena :hover bisa "menempel" setelah tap dan menghentikan animasi secara permanen. */
+@media (hover: hover) and (pointer: fine){
+  .gr-marquee:hover .gr-track{ animation-play-state: paused; }
+}
+.gr-marquee.gr-paused .gr-track{ animation-play-state: paused; }
+@keyframes gr-scroll{
+  from{ transform: translate3d(0, 0, 0); }
+  to{ transform: translate3d(-50%, 0, 0); }
+}
+.gr-item{
+  flex:0 0 auto; display:flex;
+  width: min(358px, calc(100vw - 32px));
+  padding-right: 14px;
+}
+@media (min-width:768px){ .gr-item{ width:328px; padding-right:18px; } }
+@media (min-width:1024px){ .gr-item{ width:284px; padding-right:24px; } }
+@media (min-width:1280px){ .gr-item{ width:343px; } }
+@media (min-width:1920px){ .gr-item{ width:371px; } }
+@media (prefers-reduced-motion: reduce){
+  .gr-track{ animation:none; }
+  .gr-marquee{ overflow-x:auto; }
+}
+
+.gr-card{
+  display:flex; flex-direction:column; gap:12px; width:100%; height:100%;
+  padding:20px; background:var(--paper-raised); border:1px solid var(--sand-line);
+  border-radius:20px; box-shadow:var(--shadow-sm);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.gr-card:hover{ transform: translateY(-4px); box-shadow:var(--shadow-md); }
+.gr-head{ display:flex; align-items:center; gap:12px; }
+.gr-avatar{
+  width:46px; height:46px; border-radius:50%; flex:0 0 46px;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--mint-tint); color:var(--teal-ink);
+  font-weight:700; font-size:1.05rem; overflow:hidden; object-fit:cover;
+}
+.gr-meta{ min-width:0; }
+.gr-name{ font-weight:600; font-size:.95rem; color:var(--ink); }
+.gr-sub{ display:flex; align-items:center; gap:6px; margin-top:3px; flex-wrap:wrap; }
+.gr-stars{ color:#FBBC04; font-size:.72rem; letter-spacing:.5px; }
+.gr-stars i{ margin-right:1px; }
+.gr-time{ color:var(--ink-faint); font-size:.78rem; }
+.gr-text{
+  margin:0; color:var(--ink); opacity:.86; font-size:.92rem; line-height:1.65;
+  flex:1 1 auto;
+  display:-webkit-box; -webkit-line-clamp:6; -webkit-box-orient:vertical; overflow:hidden;
+}
+
+@media (max-width:767.98px){
+  .gr-chip{ margin-top:12px; padding:7px 14px; }
+  .gr-card{ padding:16px; border-radius:16px; gap:10px; }
+  .gr-avatar{ width:42px; height:42px; flex-basis:42px; font-size:.95rem; }
+  .gr-name{ font-size:.9rem; }
+  .gr-text{ font-size:.9rem; -webkit-line-clamp:5; }
+}
